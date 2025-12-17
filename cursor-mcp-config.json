@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+        "canvelete": {
+            "command": "node",
+            "args": [
+                "/Users/mac/Documents/Canvelete.com/canvelete/mcp-server/dist/index.js"
+            ],
+            "env": {
+                "DATABASE_URL": "postgresql://mac@localhost:5432/canvelete",
+                "CANVELETE_API_KEY": "cvt_a5c514564c4b08b2778fc8586fffd8df6a5a6391a9cbfe89adedcaf01427b73a",
+                "CANVELETE_API_URL": "https://canvelete.com",
+                "WS_SERVER_URL": "ws://localhost:3001/ws"
+            }
+        }
+    }
+}

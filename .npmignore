@@ -1,0 +1,47 @@
+# Source files
+src/
+*.ts
+!*.d.ts
+
+# Config files
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+vitest.integration.config.ts
+
+# Test files
+test-*.ts
+*.test.ts
+*.spec.ts
+TESTING.md
+
+# Development files
+.env
+.env.local
+.env.example
+cursor-mcp-config.json
+CURSOR_SETUP.md
+EXAMPLES.md
+
+# Build artifacts
+node_modules/
+*.log
+.DS_Store
+
+# Git files
+.git/
+.gitignore
+.github/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Misc
+prisma/
+verify-key.ts
+test-mcp-tools.ts
+test-auth.ts
