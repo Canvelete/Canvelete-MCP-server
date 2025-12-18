@@ -26,6 +26,7 @@ dotenv.config();
 // Import modules
 import { authenticateApiKey } from './auth.js';
 import { formatError, logError } from './utils/errors.js';
+import { logger } from './utils/logger.js';
 
 // Import resources
 import {
@@ -82,9 +83,18 @@ async function createServer(apiKeyOverride?: string) {
         },
         {
             capabilities: {
-                resources: {},
-                tools: {},
-                prompts: {},
+                // Resources capability with optional listChanged notification
+                resources: {
+                    listChanged: true, // Server will notify when resource list changes
+                },
+                // Tools capability with optional listChanged notification
+                tools: {
+                    listChanged: true, // Server will notify when tool list changes
+                },
+                // Prompts capability with optional listChanged notification
+                prompts: {
+                    listChanged: true, // Server will notify when prompt list changes
+                },
             },
         }
     );
@@ -229,9 +239,11 @@ async function createServer(apiKeyOverride?: string) {
                 return await getMetadataResource();
             }
 
+            // Protocol error: Unknown resource (per MCP spec, use -32002 for resource not found)
             throw new Error(`Unknown resource: ${uriString}`);
         } catch (error) {
             logError(error, { uri: uriString });
+            // Re-throw as protocol error (will be handled by MCP SDK with proper error code)
             throw error;
         }
     });
@@ -900,14 +912,23 @@ async function createServer(apiKeyOverride?: string) {
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 default:
+                    // Protocol error: Unknown tool (per MCP spec, this is a protocol error)
                     throw new Error(`Unknown tool: ${name}`);
             }
         } catch (error) {
             logError(error, { tool: name, args });
+            
+            // Check if this is a protocol error (unknown tool) or tool execution error
+            if (error instanceof Error && error.message.startsWith('Unknown tool:')) {
+                // Protocol error - rethrow to be handled as JSON-RPC error
+                throw error;
+            }
+            
+            // Tool execution error - return with isError: true (per MCP spec)
             const errorInfo = formatError(error);
             return {
                 content: [{ type: 'text', text: JSON.stringify(errorInfo, null, 2) }],
-                isError: true,
+                isError: true, // Tool execution error (not protocol error)
             };
         }
     });
@@ -940,21 +961,22 @@ program
     .option('-k, --api-key <key>', 'Canvelete API Key override')
     .action(async (options) => {
         try {
-            console.error('Starting Canvelete MCP Server (Local stdio mode)...');
+            // Use logger (writes to stderr) - NEVER use console.log for stdout in STDIO servers
+            logger.info('Starting Canvelete MCP Server (Local stdio mode)...');
             if (options.apiKey) {
-                console.error('Info: Using API Key from CLI option');
+                logger.info('Using API Key from CLI option');
             }
 
             const server = await createServer(options.apiKey);
             const transport = new StdioServerTransport();
             await server.connect(transport);
 
-            console.error('Canvelete MCP Server running on stdio');
-            console.error('Note: For cloud deployment, use a reverse proxy or container with stdio transport');
+            logger.info('Canvelete MCP Server running on stdio');
+            logger.info('Note: For cloud deployment, use a reverse proxy or container with stdio transport');
 
-            // Keep alive
+            // Keep alive - server will handle stdio communication
         } catch (error) {
-            console.error('Fatal error details:', error);
+            logger.error('Fatal error starting server', error);
             process.exit(1);
         }
     });
@@ -964,9 +986,12 @@ program
     .command('inspect')
     .description('Inspect server configuration')
     .action(() => {
-        console.log('Canvelete MCP Server Configuration:');
-        console.log('API Key Present:', !!process.env.CANVELETE_API_KEY);
-        console.log('Node Version:', process.version);
+        // Use stderr for inspect command output (stdout is reserved for JSON-RPC)
+        // This command is safe because it's not used during MCP protocol communication
+        logger.info('Canvelete MCP Server Configuration:');
+        logger.info(`API Key Present: ${!!process.env.CANVELETE_API_KEY}`);
+        logger.info(`Node Version: ${process.version}`);
+        logger.info(`Server Version: 1.0.4`);
     });
 
 // Parse Args

@@ -71,11 +71,19 @@ export function formatError(error: unknown): { code: string; message: string } {
 
 /**
  * Log error with context
+ * Uses stderr to avoid corrupting JSON-RPC messages on stdout
  */
 export function logError(error: unknown, context?: Record<string, any>): void {
-    console.error('[MCP Server Error]', {
-        error: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        ...context,
+    // Import logger dynamically to avoid circular dependencies
+    import('./logger.js').then(({ logger }) => {
+        logger.error('MCP Server Error', error, context);
+    }).catch(() => {
+        // Fallback if logger import fails
+        process.stderr.write(JSON.stringify({
+            level: 'ERROR',
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined,
+            ...context,
+        }) + '\n');
     });
 }

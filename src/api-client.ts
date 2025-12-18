@@ -1,4 +1,5 @@
 import fetch, { RequestInit } from 'node-fetch';
+import { logger } from './utils/logger.js';
 
 /**
  * API Client for interacting with Canvelete API
@@ -55,7 +56,7 @@ export class CanveleteClient {
 
             return await response.json() as T;
         } catch (error) {
-            console.error(`Request failed: ${url}`, error);
+            logger.error(`Request failed: ${url}`, error);
             throw error;
         }
     }

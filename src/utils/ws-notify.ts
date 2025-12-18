@@ -37,13 +37,13 @@ class SocketNotifier {
             });
 
             if (!response.ok) {
-                console.warn('[SocketNotifier] Failed to send notification:', response.status);
+                logger.warn(`[SocketNotifier] Failed to send notification: ${response.status}`);
             } else {
-                console.log('[SocketNotifier] Sent:', event.type, 'for design:', event.designId.substring(0, 8));
+                logger.debug(`[SocketNotifier] Sent: ${event.type} for design: ${event.designId.substring(0, 8)}`);
             }
         } catch (error) {
             // Silently fail - real-time sync is best-effort
-            console.warn('[SocketNotifier] Error sending notification:', error);
+            logger.warn('[SocketNotifier] Error sending notification', error);
         }
     }
 

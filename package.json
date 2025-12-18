@@ -13,7 +13,9 @@
         "LICENSE",
         "DEPLOYMENT.md",
         "CHANGELOG.md",
-        "CONTRIBUTING.md"
+        "CONTRIBUTING.md",
+        "MCP_COMPLIANCE.md",
+        "SPECIFICATION_COMPLIANCE.md"
     ],
     "scripts": {
         "build": "tsup",

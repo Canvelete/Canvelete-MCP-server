@@ -363,6 +363,26 @@ npm run clean
 npm run build
 ```
 
+### MCP Protocol Compliance
+
+This server follows the [MCP Protocol specification (2025-11-25)](https://spec.modelcontextprotocol.io/). 
+
+**Compliance Documentation:**
+- **[MCP_COMPLIANCE.md](./MCP_COMPLIANCE.md)** - Implementation best practices and protocol compliance
+- **[SPECIFICATION_COMPLIANCE.md](./SPECIFICATION_COMPLIANCE.md)** - Detailed compliance with official MCP specification (2025-11-25)
+
+**Key Compliance Features:**
+- ✅ All logging uses stderr (never stdout) to avoid corrupting JSON-RPC messages
+- ✅ Proper error handling and formatting
+- ✅ Complete tool, resource, and prompt definitions
+- ✅ Standard MCP server structure and initialization
+
+**Testing Compliance:**
+```bash
+# Use MCP Inspector to verify compliance
+npx @modelcontextprotocol/inspector canvelete-mcp start
+```
+
 ## Troubleshooting
 
 ### "Invalid API key"

@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.4] - 2025-12-17
 
 ### Added
+- MCP Protocol compliance improvements
+- Professional logger utility that writes to stderr (never stdout)
+- MCP_COMPLIANCE.md documentation
+- Complete logging refactoring for STDIO transport compliance
 - GitHub badge for LobeHub MCP directory
 - Comprehensive tool documentation in README
 - Missing tool definitions (update_element, delete_element, resize_canvas, clear_canvas, list_templates, apply_template, create_template, list_assets, search_stock_images, search_icons, search_clipart, search_illustrations, list_fonts, upload_asset, generate_design, chat_with_civi, list_shapes)

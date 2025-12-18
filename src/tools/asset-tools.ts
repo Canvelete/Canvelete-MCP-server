@@ -2,6 +2,7 @@
 import type { AuthContext } from '../auth.js';
 import { validateInput } from '../utils/validation.js';
 import { ListAssetsSchema, SearchStockImagesSchema } from '../types/index.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * List user's assets
@@ -66,7 +67,7 @@ export async function searchStockImages(options: any) {
         const result = await response.json();
         return result;
     } catch (error) {
-        console.error('Failed to fetch stock images:', error);
+        logger.error('Failed to fetch stock images', error);
         // Return fallback response
         return {
             assets: [],
@@ -109,7 +110,7 @@ export async function searchIcons(query: string, page = 1, perPage = 20) {
 
         return await response.json();
     } catch (error) {
-        console.error('Failed to fetch icons:', error);
+        logger.error('Failed to fetch icons', error);
         return {
             assets: [],
             source: 'iconify',
@@ -150,7 +151,7 @@ export async function searchClipart(query: string, tag?: string, page = 1, perPa
 
         return await response.json();
     } catch (error) {
-        console.error('Failed to fetch clipart:', error);
+        logger.error('Failed to fetch clipart', error);
         return {
             assets: [],
             source: 'clipart',
@@ -191,7 +192,7 @@ export async function searchIllustrations(query: string, category?: string, page
 
         return await response.json();
     } catch (error) {
-        console.error('Failed to fetch illustrations:', error);
+        logger.error('Failed to fetch illustrations', error);
         return {
             assets: [],
             source: 'illustrations',

@@ -1,6 +1,7 @@
 // Template tools for MCP server
 import type { AuthContext } from '../auth.js';
 import { validateInput } from '../utils/validation.js';
+import { logger } from '../utils/logger.js';
 import {
     ListTemplatesSchema,
     ApplyTemplateSchema,
@@ -41,7 +42,7 @@ export async function listTemplates(input: ListTemplatesInput) {
 
         return await response.json();
     } catch (error) {
-        console.error('Failed to fetch templates:', error);
+        logger.error('Failed to fetch templates', error);
         throw new Error(`Failed to list templates: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }

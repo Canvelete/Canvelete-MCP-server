@@ -3,7 +3,8 @@ import type { Prompt } from '@modelcontextprotocol/sdk/types.js';
 
 export const createSocialPostPrompt: Prompt = {
     name: 'create_social_post',
-    description: 'Create a social media post design',
+    title: 'Create Social Media Post',
+    description: 'Create a social media post design for various platforms',
     arguments: [
         { name: 'platform', description: 'Social media platform (instagram, facebook, twitter, linkedin)', required: true },
         { name: 'message', description: 'The main message or text for the post', required: false },
@@ -12,7 +13,8 @@ export const createSocialPostPrompt: Prompt = {
 
 export const createPresentationPrompt: Prompt = {
     name: 'create_presentation',
-    description: 'Create a presentation slide design',
+    title: 'Create Presentation Slide',
+    description: 'Create a presentation slide design with title and content',
     arguments: [
         { name: 'title', description: 'Slide title', required: true },
         { name: 'content', description: 'Slide content or bullet points', required: false },
@@ -21,6 +23,7 @@ export const createPresentationPrompt: Prompt = {
 
 export const addTextPrompt: Prompt = {
     name: 'add_text_element',
+    title: 'Add Text Element',
     description: 'Add a text element to an existing design',
     arguments: [
         { name: 'designId', description: 'The ID of the design to add text to', required: true },
@@ -31,6 +34,7 @@ export const addTextPrompt: Prompt = {
 
 export const createCertificatePrompt: Prompt = {
     name: 'create_certificate',
+    title: 'Create Certificate',
     description: 'Create a premium award certificate design',
     arguments: [
         { name: 'recipient', description: 'Name of the award recipient', required: true },
