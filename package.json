@@ -1,7 +1,7 @@
 {
     "name": "@canveletedotcom/mcp-server",
     "version": "1.0.4",
-    "description": "Model Context Protocol server for Canvelete design platform",
+    "description": "Model Context Protocol (MCP) server for Canvelete design platform. Enables AI assistants to create, manipulate, and export designs programmatically through tools, resources, and prompts.",
     "main": "dist/index.cjs",
     "bin": {
         "canvelete-mcp": "dist/index.cjs"
@@ -32,7 +32,13 @@
         "cli",
         "design-automation",
         "canvas",
-        "graphics"
+        "graphics",
+        "mcp-server",
+        "design-tools",
+        "graphic-design",
+        "design-platform",
+        "claude",
+        "anthropic"
     ],
     "author": "Canvelete",
     "license": "MIT",

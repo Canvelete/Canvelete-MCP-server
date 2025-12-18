@@ -491,6 +491,231 @@ async function createServer(apiKeyOverride?: string) {
                 { name: '590_update_design', description: 'Alias of update_design', inputSchema: { type: 'object', properties: { apiKey: { type: 'string' }, designId: { type: 'string' }, name: { type: 'string' }, description: { type: 'string' }, visibility: { type: 'string', enum: ['PRIVATE', 'PUBLIC', 'UNLISTED'] }, width: { type: 'number' }, height: { type: 'number' }, canvasData: { type: 'object' } }, required: ['designId'] } },
                 { name: '590_duplicate_design', description: 'Alias of duplicate_design', inputSchema: { type: 'object', properties: { apiKey: { type: 'string' }, designId: { type: 'string' }, newName: { type: 'string' } }, required: ['designId'] } },
                 { name: '590_export_design', description: 'Alias of export_design', inputSchema: { type: 'object', properties: { apiKey: { type: 'string' }, designId: { type: 'string' }, format: { type: 'string', enum: ['png', 'jpg', 'jpeg', 'pdf', 'svg'], default: 'png' }, quality: { type: 'number', minimum: 1, maximum: 100, default: 100 } }, required: ['designId'] } },
+                {
+                    name: 'update_element',
+                    description: 'Update an existing element on the canvas',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID' },
+                            elementId: { type: 'string', description: 'Element ID to update' },
+                            updates: {
+                                type: 'object',
+                                description: 'Properties to update (same structure as add_element element parameter)',
+                            },
+                        },
+                        required: ['designId', 'elementId', 'updates'],
+                    },
+                },
+                {
+                    name: 'delete_element',
+                    description: 'Delete an element from the canvas',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID' },
+                            elementId: { type: 'string', description: 'Element ID to delete' },
+                        },
+                        required: ['designId', 'elementId'],
+                    },
+                },
+                {
+                    name: 'resize_canvas',
+                    description: 'Resize the canvas dimensions',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID' },
+                            width: { type: 'number', description: 'New width in pixels' },
+                            height: { type: 'number', description: 'New height in pixels' },
+                        },
+                        required: ['designId', 'width', 'height'],
+                    },
+                },
+                {
+                    name: 'clear_canvas',
+                    description: 'Remove all elements from the canvas',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID' },
+                        },
+                        required: ['designId'],
+                    },
+                },
+                {
+                    name: 'list_templates',
+                    description: 'List available design templates',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            category: { type: 'string', description: 'Template category filter' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            limit: { type: 'number', description: 'Items per page', default: 20 },
+                        },
+                    },
+                },
+                {
+                    name: 'apply_template',
+                    description: 'Apply a template to an existing design',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID to apply template to' },
+                            templateId: { type: 'string', description: 'Template ID to apply' },
+                        },
+                        required: ['designId', 'templateId'],
+                    },
+                },
+                {
+                    name: 'create_template',
+                    description: 'Save a design as a reusable template',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            designId: { type: 'string', description: 'Design ID to save as template' },
+                            name: { type: 'string', description: 'Template name' },
+                            description: { type: 'string', description: 'Template description' },
+                            category: { type: 'string', description: 'Template category' },
+                        },
+                        required: ['designId', 'name'],
+                    },
+                },
+                {
+                    name: 'list_assets',
+                    description: 'List user assets from the library',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            type: { type: 'string', enum: ['IMAGE', 'FONT', 'VIDEO', 'AUDIO'], description: 'Filter by asset type' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            limit: { type: 'number', description: 'Items per page', default: 20 },
+                        },
+                    },
+                },
+                {
+                    name: 'search_stock_images',
+                    description: 'Search for stock images from Pixabay',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            query: { type: 'string', description: 'Search query' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            perPage: { type: 'number', description: 'Results per page', default: 20 },
+                        },
+                        required: ['query'],
+                    },
+                },
+                {
+                    name: 'search_icons',
+                    description: 'Search for icon assets',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            query: { type: 'string', description: 'Search query' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            perPage: { type: 'number', description: 'Results per page', default: 20 },
+                        },
+                        required: ['query'],
+                    },
+                },
+                {
+                    name: 'search_clipart',
+                    description: 'Search for clipart images',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            query: { type: 'string', description: 'Search query' },
+                            tag: { type: 'string', description: 'Tag filter' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            perPage: { type: 'number', description: 'Results per page', default: 20 },
+                        },
+                        required: ['query'],
+                    },
+                },
+                {
+                    name: 'search_illustrations',
+                    description: 'Search for illustration assets',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            query: { type: 'string', description: 'Search query' },
+                            category: { type: 'string', description: 'Category filter' },
+                            page: { type: 'number', description: 'Page number', default: 1 },
+                            perPage: { type: 'number', description: 'Results per page', default: 20 },
+                        },
+                        required: ['query'],
+                    },
+                },
+                {
+                    name: 'list_fonts',
+                    description: 'List available fonts by category',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            category: { type: 'string', description: 'Font category filter (e.g., "serif", "sans-serif", "monospace")' },
+                        },
+                    },
+                },
+                {
+                    name: 'upload_asset',
+                    description: 'Upload a new asset to the library',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            file: { type: 'string', description: 'File path or URL to upload' },
+                            name: { type: 'string', description: 'Asset name' },
+                            type: { type: 'string', enum: ['IMAGE', 'FONT', 'VIDEO', 'AUDIO'], description: 'Asset type' },
+                        },
+                        required: ['file', 'name', 'type'],
+                    },
+                },
+                {
+                    name: 'generate_design',
+                    description: 'Generate a design using AI',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            prompt: { type: 'string', description: 'AI prompt describing the design to generate' },
+                            width: { type: 'number', description: 'Canvas width', default: 1920 },
+                            height: { type: 'number', description: 'Canvas height', default: 1080 },
+                            style: { type: 'string', description: 'Design style preference' },
+                        },
+                        required: ['prompt'],
+                    },
+                },
+                {
+                    name: 'chat_with_civi',
+                    description: 'Interact with Civi AI for design assistance',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            apiKey: { type: 'string' },
+                            message: { type: 'string', description: 'Message to send to Civi AI' },
+                            context: { type: 'object', description: 'Additional context for the conversation' },
+                        },
+                        required: ['message'],
+                    },
+                },
+                {
+                    name: 'list_shapes',
+                    description: 'List available SVG shapes from the shapes library',
+                    inputSchema: {
+                        type: 'object',
+                        properties: {
+                            category: { type: 'string', description: 'Shape category: basic, arrows, stars, callouts, nature, symbols, geometric, extra, or "all"', default: 'all' },
+                        },
+                    },
+                },
             ],
         };
     });
@@ -601,6 +826,21 @@ async function createServer(apiKeyOverride?: string) {
                     const { getShapes } = await import('./utils/shapes.js');
                     const category = (args as any)?.category || 'all';
                     const result = getShapes(category);
+                    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+                }
+                case 'upload_asset': {
+                    const auth = await getAuth(args);
+                    const result = await uploadAsset(auth, (args as any).file, (args as any).type);
+                    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+                }
+                case 'generate_design': {
+                    const auth = await getAuth(args);
+                    const result = await generateDesign(auth, (args as any).prompt, (args as any).style);
+                    return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+                }
+                case 'chat_with_civi': {
+                    const auth = await getAuth(args);
+                    const result = await chatWithCivi(auth, (args as any).message, (args as any).designId);
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 // Aliases mapping to existing implementations

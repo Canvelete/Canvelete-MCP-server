@@ -1,6 +1,34 @@
 # Canvelete MCP Server
 
+[![MCP Badge](https://lobehub.com/badge/mcp-full/canvelete-mcp-server)](https://lobehub.com/mcp/canvelete-mcp-server)
+
 Model Context Protocol (MCP) server for the Canvelete design platform. This server exposes Canvelete's design capabilities to AI assistants and other MCP-compatible clients, enabling programmatic design creation and manipulation.
+
+## Quick Start
+
+```bash
+# Install globally
+npm install -g @canveletedotcom/mcp-server
+
+# Or use with npx (no installation needed)
+npx -y @canveletedotcom/mcp-server start
+```
+
+Then configure your MCP client (Claude Desktop, Kiro, etc.) with:
+
+```json
+{
+  "mcpServers": {
+    "canvelete-mcp-server": {
+      "command": "canvelete-mcp",
+      "args": ["start"],
+      "env": {
+        "CANVELETE_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
 
 ## Features
 
@@ -17,81 +45,169 @@ Model Context Protocol (MCP) server for the Canvelete design platform. This serv
 - **Assets**: List assets, search stock images
 - **AI Integration**: Access Civi AI for design generation
 
-### Prompts (Guided Templates)
-- Create social media posts
-- Create presentation slides
-- Add text elements
+### Available Prompts
+
+Prompts provide guided templates for common design tasks:
+
+- **`create_social_post`** - Create social media posts (Instagram, Facebook, Twitter, etc.)
+- **`create_presentation_slide`** - Create presentation slides with title and content
+- **`add_text_element`** - Add styled text elements to designs
+
+Prompts help AI assistants create designs with proper structure and styling automatically.
 
 ## Installation
 
 ### Method 1: Global Installation (Recommended)
-This gives you the `canvelete-mcp` command globally.
+
+Install the package globally to use the `canvelete-mcp` command:
 
 ```bash
 npm install -g @canveletedotcom/mcp-server
-# or
-pnpm add -g @canveletedotcom/mcp-server
 ```
 
-### Method 2: Use via npx
-Run without installing:
+### Method 2: NPX (No Installation Required)
+
+Use npx to run without installing:
+
 ```bash
-npx @canveletedotcom/mcp-server start
+npx -y @canveletedotcom/mcp-server start
 ```
+
+### Method 3: Local Development
+
+For development or custom builds:
+
+```bash
+git clone https://github.com/canvelete/canvelete.git
+cd canvelete/mcp-server
+npm install
+npm run build
+```
+
+Then use the local build path in your MCP configuration.
 
 ## Configuration
 
 ### Environment Variables
 
-You need a Canvelete API key.
+Create a `.env` file in the mcp-server directory:
+
+```env
+# Required: Canvelete API Key
+CANVELETE_API_KEY =your_api_key_here
+
+# Optional: Canvelete API URL (defaults to https://www.canvelete.com)
+CANVELETE_API_URL=https://www.canvelete.com
+
+# Optional: For AI generation features (if using Civi AI directly)
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+### Authentication
+
+You need a Canvelete API key to use the MCP server:
 
 1. Log in to your Canvelete account
 2. Go to Settings → API Keys
 3. Generate a new API key
+4. Save the key securely
 
-### Usage with Claude Desktop
+You can provide the API key in two ways:
 
-1. Open your Claude Desktop config file:
+**Option 1: Environment Variable** (recommended for Claude Desktop)
+```env
+CANVELETE_API_KEY=your_api_key_here
+```
+
+**Option 2: Tool Arguments** (for programmatic use)
+```json
+{
+  "apiKey": "your_api_key_here",
+  "name": "My Design"
+}
+```
+
+## Configuration
+
+### Claude Desktop
+
+1. Find your Claude Desktop config file:
    - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
    - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+   - **Linux**: `~/.config/Claude/claude_desktop_config.json`
 
 2. Add the Canvelete server configuration:
 
+**Option A: Using Global Installation**
 ```json
 {
   "mcpServers": {
-    "canvelete": {
+    "canvelete-mcp-server": {
       "command": "canvelete-mcp",
       "args": ["start"],
       "env": {
-        "CANVELETE_API_KEY": "your_api_key_here"
+        "CANVELETE_API_KEY": "your_api_key_here",
+        "CANVELETE_API_URL": "https://www.canvelete.com"
       }
     }
   }
 }
 ```
 
-*Note: If you haven't installed it globally, you can use `npx`:*
-
+**Option B: Using NPX (No Installation)**
 ```json
 {
   "mcpServers": {
-    "canvelete": {
+    "canvelete-mcp-server": {
       "command": "npx",
       "args": ["-y", "@canveletedotcom/mcp-server", "start"],
       "env": {
-        "CANVELETE_API_KEY": "your_api_key_here"
+        "CANVELETE_API_KEY": "your_api_key_here",
+        "CANVELETE_API_URL": "https://www.canvelete.com"
       }
     }
   }
 }
 ```
 
-4. Restart Claude Desktop
+**Option C: Using Local Build**
+```json
+{
+  "mcpServers": {
+    "canvelete-mcp-server": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-server/dist/index.cjs", "start"],
+      "env": {
+        "CANVELETE_API_KEY": "your_api_key_here",
+        "CANVELETE_API_URL": "https://www.canvelete.com"
+      }
+    }
+  }
+}
+```
+
+3. Restart Claude Desktop
+
+### Kiro
+
+1. Find your Kiro config file: `~/.kiro/settings/mcp.json`
+
+2. Add the same configuration as above
+
+3. Restart Kiro
+
+### Other MCP Clients
+
+Any MCP-compatible client can use this server. Configure it to run:
+- Command: `canvelete-mcp` (if installed globally) or `npx -y @canveletedotcom/mcp-server`
+- Args: `["start"]`
+- Environment: Set `CANVELETE_API_KEY` and optionally `CANVELETE_API_URL`
+
+## Usage Examples
 
 ### Example Conversations
 
-Once configured, you can ask Claude:
+Once configured, you can ask your AI assistant:
 
 - **"What designs do I have in Canvelete?"**
 - **"Create a new 1080x1080 Instagram post design called 'Summer Sale'"**
@@ -99,47 +215,107 @@ Once configured, you can ask Claude:
 - **"Export design {id} as PNG"**
 - **"List all my uploaded assets"**
 - **"Apply template {template-id} to design {design-id}"**
+- **"Create a presentation slide with title 'Welcome' and subtitle 'Introduction'"**
+- **"Search for stock images of mountains"**
+
+### Quick Example: Create a Social Media Post
+
+```javascript
+// 1. Create a design
+create_design({
+  name: "Summer Sale Post",
+  width: 1080,
+  height: 1080
+})
+
+// 2. Add background
+add_element({
+  designId: "{design-id}",
+  element: {
+    type: "rectangle",
+    x: 0, y: 0,
+    width: 1080, height: 1080,
+    fill: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+  }
+})
+
+// 3. Add text
+add_element({
+  designId: "{design-id}",
+  element: {
+    type: "text",
+    text: "SUMMER SALE",
+    x: 100, y: 400,
+    width: 880, height: 150,
+    fontSize: 96,
+    fontFamily: "Poppins",
+    fill: "#FFFFFF",
+    fontWeight: "bold"
+  }
+})
+
+// 4. Export
+export_design({
+  designId: "{design-id}",
+  format: "png",
+  quality: 100
+})
+```
+
+See [EXAMPLES.md](./EXAMPLES.md) for more detailed examples.
 
 ## Available Resources
 
+Resources provide read-only access to Canvelete data:
+
 | URI | Description |
 |-----|-------------|
-| `canvelete://designs/list` | List user's designs |
-| `canvelete://designs/templates` | Browse templates |
-| `canvelete://design/{id}` | Get specific design |
-| `canvelete://canvas/{designId}` | Get canvas state |
-| `canvelete://canvas/{designId}/elements` | Get canvas elements |
-| `canvelete://assets/library` | User's assets |
-| `canvelete://assets/fonts` | Available fonts |
-| `canvelete://user/profile` | User profile |
-| `canvelete://user/preferences` | User preferences |
+| `canvelete://api/designs/list` | List all user's designs with pagination |
+| `canvelete://api/designs/templates` | Browse public design templates |
+| `canvelete://api/design/{id}` | Get detailed information about a specific design |
+| `canvelete://api/canvas/{designId}` | Get the current canvas state for a design |
+| `canvelete://api/canvas/{designId}/elements` | Get all elements on a design canvas |
+| `canvelete://api/assets/library` | User's uploaded assets (images, fonts, etc.) |
+| `canvelete://api/assets/fonts` | List of all available fonts for text elements |
+| `canvelete://api/user/profile` | User profile and subscription information |
+| `canvelete://api/user/preferences` | User editor preferences and settings |
+| `canvelete://api/metadata/schema` | System metadata, schemas, and property definitions |
 
 ## Available Tools
 
-### Design Tools
-- `list_designs` - List all user's designs
-- `get_design` - Get detailed design info including canvas data
-- `create_design` - Create new design
-- `update_design` - Update design properties
-- `delete_design` - Delete design
-- `duplicate_design` - Fork/copy design
-- `export_design` - Export to PNG/JPG/PDF/SVG
+### Design Management Tools
+- **`list_designs`** - List all user's designs with pagination and search
+- **`get_design`** - Get detailed design info including canvas data
+- **`create_design`** - Create new design with custom dimensions
+- **`update_design`** - Update design properties (name, description, visibility)
+- **`delete_design`** - Delete a design permanently
+- **`duplicate_design`** - Fork/copy an existing design
+- **`export_design`** - Export design to PNG, JPG, PDF, or SVG format
 
-### Canvas Tools
-- `add_element` - Add shape, text, image, etc.
-- `update_element` - Modify element properties
-- `delete_element` - Remove element
-- `resize_canvas` - Change dimensions
-- `clear_canvas` - Remove all elements
+### Canvas Manipulation Tools
+- **`add_element`** - Add any element type (shape, text, image, SVG, etc.)
+- **`update_element`** - Modify element properties (position, style, content)
+- **`delete_element`** - Remove an element from canvas
+- **`resize_canvas`** - Change canvas dimensions
+- **`clear_canvas`** - Remove all elements from canvas
 
 ### Template Tools
-- `list_templates` - Browse templates
-- `apply_template` - Apply to design
-- `create_template` - Save as template
+- **`list_templates`** - Browse available design templates
+- **`apply_template`** - Apply a template to an existing design
+- **`create_template`** - Save a design as a reusable template
 
-### Asset Tools
-- `list_assets` - View asset library
-- `search_stock_images` - Search Pixabay
+### Asset Management Tools
+- **`list_assets`** - View user's asset library (images, fonts, etc.)
+- **`search_stock_images`** - Search Pixabay for stock images
+- **`search_icons`** - Search for icon assets
+- **`search_clipart`** - Search for clipart images
+- **`search_illustrations`** - Search for illustration assets
+- **`list_fonts`** - List available fonts by category
+- **`upload_asset`** - Upload a new asset to the library
+
+### AI Tools
+- **`generate_design`** - Generate designs using AI
+- **`chat_with_civi`** - Interact with Civi AI for design assistance
 
 ## Element Types
 
@@ -193,7 +369,7 @@ npm run build
 - Verify you own the resource you're modifying
 
 ### "Failed to connect to API"
-- Check `CANVELETE_API_URL` is correct (default: https://canvelete.com)
+- Check `CANVELETE_API_URL` is correct (default: https://www.canvelete.com)
 - Verify network connectivity to the Canvelete API
 - For local development, ensure the Canvelete app is running
 
@@ -234,18 +410,70 @@ WS_PORT=3001
 WS_SERVER_URL=ws://localhost:3001/ws
 ```
 
-## Security Notes
+## Security & Privacy
 
-- **API Keys**: Keep your API keys secure. Never commit them to version control.
-- **Database Access**: The MCP server has full database access. Only use trusted API keys.
-- **Rate Limiting**: API keys may have rate limits. Check your subscription plan.
+### API Key Security
+
+- **Never commit API keys** to version control or share them publicly
+- **Use environment variables** or secure configuration files
+- **Rotate keys regularly** if compromised or exposed
+- **Use separate keys** for development and production
+
+### Data Privacy
+
+- The MCP server accesses your Canvelete account data through API keys
+- All API communication uses HTTPS encryption
+- API keys have scoped permissions based on your account settings
+- Review your API key permissions in Canvelete Settings → API Keys
+
+### Rate Limiting
+
+- API keys may have rate limits based on your subscription plan
+- The server respects rate limits and will return appropriate errors
+- Check your subscription plan for rate limit details
+
+### Best Practices
+
+- Only use trusted API keys from your own account
+- Don't share your API keys with untrusted parties
+- Monitor your API usage in Canvelete dashboard
+- Report security issues to security@canvelete.com (do not open public issues)
+
+## Requirements
+
+- **Node.js**: >= 18.0.0
+- **Canvelete API Key**: Get one from [Canvelete Settings → API Keys](https://canvelete.com/settings/api-keys)
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+Quick steps:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+For detailed contribution guidelines, code standards, and development setup, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for a detailed list of changes and version history.
 
 ## License
 
-MIT
+MIT License - see [LICENSE](./LICENSE) file for details.
 
 ## Support
 
 For issues and questions:
-- GitHub Issues: [canvelete/issues](https://github.com/canvelete/canvelete)
-- Documentation: [canvelete.com/docs](https://canvelete.com/docs)
+- **GitHub Issues**: [canvelete/canvelete/issues](https://github.com/canvelete/canvelete/issues)
+- **Documentation**: [canvelete.com/docs](https://canvelete.com/docs)
+- **Website**: [canvelete.com](https://canvelete.com)
+
+## Related Links
+
+- [MCP Server Directory](https://lobehub.com/mcp/canvelete-mcp-server)
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io)
+- [Canvelete Platform](https://canvelete.com)
