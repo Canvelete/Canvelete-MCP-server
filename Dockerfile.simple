@@ -1,0 +1,30 @@
+# Canvelete MCP Server - Simple Dockerfile using published npm package
+# Use this for quick deployments using the published @canveletedotcom/mcp-server package
+
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install the published package globally
+RUN npm install -g @canveletedotcom/mcp-server
+
+# Create a non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 mcpuser
+
+# Switch to non-root user
+USER mcpuser
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD node -e "process.exit(0)" || exit 1
+
+# Start the MCP server
+CMD ["canvelete-mcp", "start"]
+
+# Labels
+LABEL org.opencontainers.image.title="Canvelete MCP Server"
+LABEL org.opencontainers.image.description="Model Context Protocol server for Canvelete design platform"
+LABEL org.opencontainers.image.vendor="Canvelete"
+LABEL org.opencontainers.image.licenses="MIT"
+

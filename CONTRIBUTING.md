@@ -2,6 +2,11 @@
 
 Thank you for your interest in contributing to the Canvelete MCP Server! This document provides guidelines and instructions for contributing.
 
+**🔗 Related Resources:**
+- **[Canvelete Platform](https://canvelete.com)** - Main application
+- **[Documentation](https://docs.canvelete.com)** - Platform and API documentation
+- **[API Reference](https://docs.canvelete.com/api)** - Detailed API documentation
+
 ## Code of Conduct
 
 By participating in this project, you agree to maintain a respectful and inclusive environment for all contributors.
@@ -157,7 +162,9 @@ refactor: Improve error handling
 If you have questions, feel free to:
 - Open an issue for discussion
 - Check existing issues and PRs
-- Review the documentation
+- Review the [documentation](https://docs.canvelete.com)
+- Check the [API reference](https://docs.canvelete.com/api)
+- Visit the [Canvelete platform](https://canvelete.com) for more information
 
 Thank you for contributing! 🎉
 

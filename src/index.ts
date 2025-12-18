@@ -936,11 +936,11 @@ async function createServer(apiKeyOverride?: string) {
 // Start Command
 program
     .command('start')
-    .description('Start the MCP server (Stdio transport)')
+    .description('Start the MCP server (local stdio mode - default for MCP clients)')
     .option('-k, --api-key <key>', 'Canvelete API Key override')
     .action(async (options) => {
         try {
-            console.error('Starting Canvelete MCP Server...');
+            console.error('Starting Canvelete MCP Server (Local stdio mode)...');
             if (options.apiKey) {
                 console.error('Info: Using API Key from CLI option');
             }
@@ -950,6 +950,7 @@ program
             await server.connect(transport);
 
             console.error('Canvelete MCP Server running on stdio');
+            console.error('Note: For cloud deployment, use a reverse proxy or container with stdio transport');
 
             // Keep alive
         } catch (error) {

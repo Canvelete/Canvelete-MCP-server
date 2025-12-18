@@ -1,0 +1,38 @@
+version: '3.8'
+
+# Simplified docker-compose using published npm package
+# Use: docker-compose -f docker-compose.simple.yml up -d
+
+services:
+  canvelete-mcp-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    image: canvelete-mcp-server:latest
+    container_name: canvelete-mcp-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - CANVELETE_API_KEY=${CANVELETE_API_KEY}
+      - CANVELETE_API_URL=${CANVELETE_API_URL:-https://canvelete.com}
+      - WS_SERVER_URL=${WS_SERVER_URL:-}
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+

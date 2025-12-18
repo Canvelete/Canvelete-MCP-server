@@ -2,7 +2,12 @@
 
 [![MCP Badge](https://lobehub.com/badge/mcp-full/canvelete-mcp-server)](https://lobehub.com/mcp/canvelete-mcp-server)
 
-Model Context Protocol (MCP) server for the Canvelete design platform. This server exposes Canvelete's design capabilities to AI assistants and other MCP-compatible clients, enabling programmatic design creation and manipulation.
+Model Context Protocol (MCP) server for the [Canvelete](https://canvelete.com) design platform. This server exposes Canvelete's design capabilities to AI assistants and other MCP-compatible clients, enabling programmatic design creation and manipulation.
+
+**🔗 Links:**
+- **[Canvelete Platform](https://canvelete.com)** - Create designs online
+- **[Documentation](https://docs.canvelete.com)** - Full API and platform documentation
+- **[Get API Key](https://canvelete.com/settings/api-keys)** - Generate your API key
 
 ## Quick Start
 
@@ -107,10 +112,12 @@ GEMINI_API_KEY=your_gemini_api_key
 
 You need a Canvelete API key to use the MCP server:
 
-1. Log in to your Canvelete account
-2. Go to Settings → API Keys
+1. Log in to your [Canvelete account](https://canvelete.com)
+2. Go to [Settings → API Keys](https://canvelete.com/settings/api-keys)
 3. Generate a new API key
 4. Save the key securely
+
+For detailed API documentation, see [docs.canvelete.com](https://docs.canvelete.com).
 
 You can provide the API key in two ways:
 
@@ -262,7 +269,7 @@ export_design({
 })
 ```
 
-See [EXAMPLES.md](./EXAMPLES.md) for more detailed examples.
+See [EXAMPLES.md](./EXAMPLES.md) for more detailed examples. For complete API documentation, visit [docs.canvelete.com](https://docs.canvelete.com).
 
 ## Available Resources
 
@@ -439,10 +446,71 @@ WS_SERVER_URL=ws://localhost:3001/ws
 - Monitor your API usage in Canvelete dashboard
 - Report security issues to security@canvelete.com (do not open public issues)
 
+## Deployment Modes
+
+The Canvelete MCP Server supports both **local** and **cloud** deployment. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+### Local Deployment (Default)
+
+The server runs locally on your machine using stdio transport, which is the standard for MCP clients like Claude Desktop, Kiro, and Cursor.
+
+**Advantages:**
+- ✅ Full control over your environment
+- ✅ No network latency
+- ✅ Data stays on your machine
+- ✅ Simple setup and configuration
+- ✅ Works offline (once API key is cached)
+
+**Use Cases:**
+- Personal development
+- Testing and debugging
+- Privacy-sensitive workflows
+- Desktop applications (Claude Desktop, Cursor, etc.)
+
+### Cloud Deployment
+
+The server can be deployed to cloud platforms using containerization or serverless functions. The stdio transport works seamlessly in cloud environments.
+
+**Advantages:**
+- ✅ Scalable and always available
+- ✅ No local resource usage
+- ✅ Accessible from multiple devices
+- ✅ Managed infrastructure
+- ✅ Easy updates and maintenance
+
+**Supported Platforms:**
+- **Docker/Containers**: Deploy to any container platform (Docker, Kubernetes, etc.)
+- **Google Cloud Run**: Serverless container platform
+- **Azure Functions**: Serverless with custom handlers
+- **AWS Lambda**: Serverless functions (with stdio adapter)
+- **Vercel/Netlify**: Serverless platforms
+- **Any Node.js hosting**: Railway, Render, Fly.io, etc.
+
+**Quick Cloud Examples:**
+
+```bash
+# Docker deployment (using published package)
+docker build -f Dockerfile.simple -t canvelete-mcp-server .
+docker run -e CANVELETE_API_KEY=your_key canvelete-mcp-server
+
+# Or use docker-compose
+docker-compose up -d
+```
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment guides for:
+- Docker/Containers (Dockerfile included)
+- Google Cloud Run
+- Azure Functions
+- AWS Lambda
+- Railway, Render, Fly.io
+- Vercel/Netlify
+
 ## Requirements
 
 - **Node.js**: >= 18.0.0
+- **Canvelete Account**: Sign up at [canvelete.com](https://canvelete.com)
 - **Canvelete API Key**: Get one from [Canvelete Settings → API Keys](https://canvelete.com/settings/api-keys)
+- **Documentation**: See [docs.canvelete.com](https://docs.canvelete.com) for API reference
 
 ## Contributing
 
@@ -469,11 +537,55 @@ MIT License - see [LICENSE](./LICENSE) file for details.
 
 For issues and questions:
 - **GitHub Issues**: [canvelete/canvelete/issues](https://github.com/canvelete/canvelete/issues)
-- **Documentation**: [canvelete.com/docs](https://canvelete.com/docs)
-- **Website**: [canvelete.com](https://canvelete.com)
+- **Platform Documentation**: [docs.canvelete.com](https://docs.canvelete.com)
+- **Canvelete Platform**: [canvelete.com](https://canvelete.com)
+- **API Documentation**: [docs.canvelete.com/api](https://docs.canvelete.com/api)
+- **Get Help**: Visit [canvelete.com/support](https://canvelete.com/support) or [docs.canvelete.com/help](https://docs.canvelete.com/help)
+
+## Deployment Architecture
+
+### How It Works
+
+The MCP server uses **stdio transport** by default, which works in both local and cloud environments:
+
+1. **Local Mode**: MCP clients (Claude Desktop, etc.) spawn the server process and communicate via stdin/stdout
+2. **Cloud Mode**: Cloud platforms run the server in containers/functions and handle stdio communication through their infrastructure
+
+### Data Flow
+
+```
+┌─────────────┐         ┌──────────────┐         ┌─────────────┐
+│ MCP Client  │ ◄──────► │ MCP Server   │ ◄──────► │ Canvelete   │
+│ (Claude)    │  stdio  │ (This Server)│  HTTPS  │    API      │
+└─────────────┘         └──────────────┘         └─────────────┘
+```
+
+- **MCP Protocol**: JSON-RPC over stdio (local) or HTTP/SSE (cloud)
+- **Canvelete API**: Always HTTPS to `https://canvelete.com`
+
+### Choosing Deployment Mode
+
+**Use Local Deployment if:**
+- You're using Claude Desktop, Cursor, or other desktop MCP clients
+- You want maximum privacy and control
+- You're developing or testing
+- You have a single user/machine
+
+**Use Cloud Deployment if:**
+- You need 24/7 availability
+- You want to share access across multiple devices
+- You need scalability for multiple users
+- You prefer managed infrastructure
 
 ## Related Links
 
+### Canvelete Resources
+- **[Canvelete Platform](https://canvelete.com)** - Create and edit designs online
+- **[Documentation](https://docs.canvelete.com)** - Complete platform and API documentation
+- **[API Reference](https://docs.canvelete.com/api)** - Detailed API documentation
+- **[Get Started Guide](https://docs.canvelete.com/getting-started)** - Platform getting started guide
+
+### MCP Resources
 - [MCP Server Directory](https://lobehub.com/mcp/canvelete-mcp-server)
 - [Model Context Protocol Documentation](https://modelcontextprotocol.io)
-- [Canvelete Platform](https://canvelete.com)
+- [MCP Cloud Deployment Guide](https://modelcontextprotocol.io/docs/deployment)

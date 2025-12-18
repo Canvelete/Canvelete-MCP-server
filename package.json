@@ -10,7 +10,10 @@
     "files": [
         "dist",
         "README.md",
-        "LICENSE"
+        "LICENSE",
+        "DEPLOYMENT.md",
+        "CHANGELOG.md",
+        "CONTRIBUTING.md"
     ],
     "scripts": {
         "build": "tsup",
@@ -50,6 +53,7 @@
         "url": "https://github.com/canvelete/canvelete/issues"
     },
     "homepage": "https://canvelete.com",
+    "documentation": "https://docs.canvelete.com",
     "dependencies": {
         "@modelcontextprotocol/sdk": "^1.0.4",
         "commander": "^12.1.0",

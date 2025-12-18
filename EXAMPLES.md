@@ -2,6 +2,11 @@
 
 This document provides practical examples of using the Canvelete MCP server.
 
+**🔗 Related Resources:**
+- **[Canvelete Platform](https://canvelete.com)** - Create and edit designs online
+- **[Documentation](https://docs.canvelete.com)** - Full platform and API documentation
+- **[API Reference](https://docs.canvelete.com/api)** - Detailed API documentation
+
 ## Example 1: Create a Social Media Post
 
 ```typescript

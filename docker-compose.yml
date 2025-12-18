@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  canvelete-mcp-server:
+    build:
+      context: .
+      # Use Dockerfile.simple for faster builds with published package
+      # Use Dockerfile for building from source
+      dockerfile: Dockerfile
+    image: canvelete-mcp-server:latest
+    container_name: canvelete-mcp-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - CANVELETE_API_KEY=${CANVELETE_API_KEY}
+      - CANVELETE_API_URL=${CANVELETE_API_URL:-https://canvelete.com}
+      - WS_SERVER_URL=${WS_SERVER_URL:-}
+    # Uncomment if you add HTTP adapter in the future
+    # ports:
+    #   - "3000:3000"
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "-e", "process.exit(0)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    # Logging
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
