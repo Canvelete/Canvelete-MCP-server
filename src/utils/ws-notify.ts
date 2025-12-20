@@ -5,6 +5,8 @@
  * This allows the MCP server to notify the editor of design changes.
  */
 
+import { logger } from './logger.js';
+
 interface DesignChangeEvent {
     type: 'element_added' | 'element_updated' | 'element_deleted' | 'canvas_resized' | 'canvas_cleared' | 'design_updated' | 'full_sync';
     designId: string;

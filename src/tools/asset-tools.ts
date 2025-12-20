@@ -18,8 +18,9 @@ export async function listAssets(auth: AuthContext, options: any = {}) {
 
 /**
  * Search stock images from various sources (Pixabay, Unsplash, Iconify, Clipart, Illustrations)
+ * Note: This function requires authentication via API key
  */
-export async function searchStockImages(options: any) {
+export async function searchStockImages(auth: AuthContext, options: any) {
     const data = validateInput(SearchStockImagesSchema, options);
     const baseUrl = process.env.CANVELETE_API_URL || 'https://canvelete.com';
 
@@ -57,6 +58,7 @@ export async function searchStockImages(options: any) {
         const response = await fetch(`${baseUrl}/api/assets/library?${params}`, {
             headers: {
                 'Accept': 'application/json',
+                'Authorization': `Bearer ${auth.apiKey}`,
             },
         });
 
@@ -87,7 +89,7 @@ export async function searchStockImages(options: any) {
 /**
  * Search icons specifically from Iconify (200K+ icons)
  */
-export async function searchIcons(query: string, page = 1, perPage = 20) {
+export async function searchIcons(auth: AuthContext, query: string, page = 1, perPage = 20) {
     const baseUrl = process.env.CANVELETE_API_URL || 'https://canvelete.com';
 
     try {
@@ -101,6 +103,7 @@ export async function searchIcons(query: string, page = 1, perPage = 20) {
         const response = await fetch(`${baseUrl}/api/assets/library?${params}`, {
             headers: {
                 'Accept': 'application/json',
+                'Authorization': `Bearer ${auth.apiKey}`,
             },
         });
 
@@ -124,7 +127,7 @@ export async function searchIcons(query: string, page = 1, perPage = 20) {
 /**
  * Search clipart from assets.canvelete.com
  */
-export async function searchClipart(query: string, tag?: string, page = 1, perPage = 20) {
+export async function searchClipart(auth: AuthContext, query: string, tag?: string, page = 1, perPage = 20) {
     const baseUrl = process.env.CANVELETE_API_URL || 'https://canvelete.com';
 
     try {
@@ -142,6 +145,7 @@ export async function searchClipart(query: string, tag?: string, page = 1, perPa
         const response = await fetch(`${baseUrl}/api/assets/library?${params}`, {
             headers: {
                 'Accept': 'application/json',
+                'Authorization': `Bearer ${auth.apiKey}`,
             },
         });
 
@@ -165,7 +169,7 @@ export async function searchClipart(query: string, tag?: string, page = 1, perPa
 /**
  * Search illustrations
  */
-export async function searchIllustrations(query: string, category?: string, page = 1, perPage = 20) {
+export async function searchIllustrations(auth: AuthContext, query: string, category?: string, page = 1, perPage = 20) {
     const baseUrl = process.env.CANVELETE_API_URL || 'https://canvelete.com';
 
     try {
@@ -183,6 +187,7 @@ export async function searchIllustrations(query: string, category?: string, page
         const response = await fetch(`${baseUrl}/api/assets/library?${params}`, {
             headers: {
                 'Accept': 'application/json',
+                'Authorization': `Bearer ${auth.apiKey}`,
             },
         });
 

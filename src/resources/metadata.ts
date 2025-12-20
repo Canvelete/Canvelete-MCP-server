@@ -7,6 +7,7 @@ import {
     CreateDesignSchema,
 } from '../types/index.js';
 import { zodToJsonSchema } from 'zod-to-json-schema';
+import { ELEMENT_CAPABILITIES } from './element-capabilities.js';
 
 /**
  * Complete font catalog with metadata for design decisions
@@ -180,80 +181,295 @@ const SVG_SHAPES = {
  * External asset sources documentation
  */
 const EXTERNAL_ASSETS = {
+    overview: {
+        description: 'Canvelete provides access to multiple asset sources for images, icons, cliparts, and illustrations',
+        availableSources: ['pixabay', 'unsplash', 'iconify', 'cliparts', 'illustrations'],
+        howToUse: 'Use the search_stock_images, search_icons, search_clipart, or search_illustrations tools',
+    },
+    
     pixabay: {
         name: 'Pixabay',
-        description: 'Free stock images, photos, and illustrations',
-        searchEndpoint: 'Use search_stock_images tool with query parameter',
-        categories: ['photos', 'illustrations', 'vectors'],
+        description: 'Free stock photos, illustrations, and vectors - over 2.7 million assets',
+        searchTool: 'search_stock_images',
+        searchPrefix: 'photo: or leave blank',
+        assetTypes: ['photos', 'illustrations', 'vectors', 'backgrounds'],
+        license: 'Free for commercial use, no attribution required',
+        imageFormats: ['JPG', 'PNG', 'WebP'],
+        categories: [
+            'backgrounds', 'fashion', 'nature', 'science', 'education',
+            'feelings', 'health', 'people', 'religion', 'places',
+            'animals', 'industry', 'computer', 'food', 'sports',
+            'transportation', 'travel', 'buildings', 'business', 'music',
+        ],
         tips: [
             'Use descriptive keywords for better results',
             'Combine multiple keywords: "business meeting office"',
-            'Filter by image type if needed',
+            'Try different variations: "mountain" vs "mountains"',
+            'Use specific terms: "golden retriever" vs "dog"',
         ],
         exampleQueries: [
-            'nature landscape mountains',
-            'business professional office',
-            'abstract background gradient',
-            'food restaurant cooking',
-            'technology computer digital',
+            'nature landscape mountains sunset',
+            'business professional office meeting',
+            'abstract background gradient blue',
+            'food restaurant cooking chef',
+            'technology computer digital workspace',
+            'people team collaboration',
+            'city skyline night lights',
+            'flowers garden spring bloom',
+        ],
+        usage: {
+            tool: 'search_stock_images',
+            example: { query: 'nature landscape', page: 1, perPage: 20 },
+            addToDesign: {
+                type: 'image',
+                src: '{url_from_search_result}',
+                objectFit: 'cover',
+            },
+        },
+    },
+    
+    unsplash: {
+        name: 'Unsplash',
+        description: 'High-quality, curated photography - over 3 million photos',
+        searchTool: 'search_stock_images',
+        searchPrefix: 'unsplash:',
+        assetTypes: ['photos', 'high-resolution images'],
+        license: 'Free for commercial use, attribution appreciated',
+        imageFormats: ['JPG'],
+        specialties: [
+            'Professional photography',
+            'High resolution (up to 6000px)',
+            'Curated collections',
+            'Artistic compositions',
+        ],
+        tips: [
+            'Prefix query with "unsplash:" for Unsplash-specific search',
+            'Great for hero images and backgrounds',
+            'Higher quality than typical stock photos',
+        ],
+        exampleQueries: [
+            'unsplash:minimalist workspace',
+            'unsplash:urban architecture',
+            'unsplash:natural landscape',
         ],
     },
+    
     iconify: {
         name: 'Iconify',
-        description: 'Massive icon library with 200,000+ icons from popular icon sets',
-        searchEndpoint: 'https://api.iconify.design/search?query={query}&limit={limit}',
-        svgEndpoint: 'https://api.iconify.design/{collection}/{icon}.svg',
+        description: 'Unified icon framework with 200,000+ icons from 150+ icon sets',
+        searchTool: 'search_icons',
+        searchPrefix: 'icon: or iconify:',
+        assetTypes: ['icons', 'symbols', 'pictograms'],
+        license: 'Varies by icon set (most are open source)',
+        imageFormats: ['SVG'],
         popularCollections: [
-            { prefix: 'mdi', name: 'Material Design Icons', count: '7000+' },
-            { prefix: 'fa6-solid', name: 'Font Awesome 6 Solid', count: '1400+' },
-            { prefix: 'fa6-regular', name: 'Font Awesome 6 Regular', count: '160+' },
-            { prefix: 'lucide', name: 'Lucide Icons', count: '1000+' },
-            { prefix: 'heroicons', name: 'Heroicons', count: '450+' },
-            { prefix: 'tabler', name: 'Tabler Icons', count: '4500+' },
-            { prefix: 'ph', name: 'Phosphor Icons', count: '6000+' },
-            { prefix: 'carbon', name: 'Carbon Icons', count: '2000+' },
-            { prefix: 'ri', name: 'Remix Icons', count: '2400+' },
-            { prefix: 'ion', name: 'Ionicons', count: '1300+' },
+            { prefix: 'mdi', name: 'Material Design Icons', count: '7000+', style: 'Google Material Design' },
+            { prefix: 'fa6-solid', name: 'Font Awesome 6 Solid', count: '1400+', style: 'Solid filled icons' },
+            { prefix: 'fa6-regular', name: 'Font Awesome 6 Regular', count: '160+', style: 'Outlined icons' },
+            { prefix: 'fa6-brands', name: 'Font Awesome 6 Brands', count: '460+', style: 'Brand logos' },
+            { prefix: 'lucide', name: 'Lucide Icons', count: '1000+', style: 'Clean, consistent' },
+            { prefix: 'heroicons', name: 'Heroicons', count: '450+', style: 'Tailwind CSS icons' },
+            { prefix: 'tabler', name: 'Tabler Icons', count: '4500+', style: 'Stroke-based' },
+            { prefix: 'ph', name: 'Phosphor Icons', count: '6000+', style: 'Flexible, modern' },
+            { prefix: 'carbon', name: 'Carbon Icons', count: '2000+', style: 'IBM Design' },
+            { prefix: 'ri', name: 'Remix Icons', count: '2400+', style: 'Neutral, elegant' },
+            { prefix: 'ion', name: 'Ionicons', count: '1300+', style: 'Ionic Framework' },
+            { prefix: 'bi', name: 'Bootstrap Icons', count: '1800+', style: 'Bootstrap design' },
+            { prefix: 'ant-design', name: 'Ant Design Icons', count: '800+', style: 'Ant Design system' },
+        ],
+        categories: [
+            'arrows', 'business', 'communication', 'devices', 'editing',
+            'files', 'finance', 'food', 'health', 'home', 'maps',
+            'media', 'nature', 'people', 'shopping', 'social', 'sports',
+            'technology', 'transportation', 'weather',
         ],
         tips: [
             'Icons are SVG format - add as type "svg" element',
-            'Use icon name directly: "mdi:home", "fa6-solid:star"',
-            'Search returns icon names you can use to fetch SVG',
+            'Use search_icons tool to find icons',
+            'Icons scale perfectly at any size',
+            'Combine icon name with collection: "mdi:home"',
+            'Use objectFit: "contain" to maintain aspect ratio',
         ],
         exampleQueries: [
-            'home house',
-            'user person profile',
-            'settings gear cog',
-            'arrow chevron',
-            'check checkmark',
-            'close x delete',
-            'menu hamburger',
-            'search magnify',
+            'home house building',
+            'user person profile avatar',
+            'settings gear cog configuration',
+            'arrow chevron direction',
+            'check checkmark tick success',
+            'close x delete remove',
+            'menu hamburger navigation',
+            'search magnify find',
+            'heart like favorite love',
+            'star rating bookmark',
+            'email mail message',
+            'phone call contact',
+            'calendar date schedule',
+            'clock time',
+            'download save',
+            'upload cloud',
         ],
+        usage: {
+            tool: 'search_icons',
+            example: { query: 'home', page: 1, perPage: 20 },
+            addToDesign: {
+                type: 'svg',
+                src: 'https://api.iconify.design/mdi/home.svg',
+                objectFit: 'contain',
+            },
+        },
     },
+    
     cliparts: {
         name: 'Canvelete Cliparts',
-        description: 'Curated clipart library hosted on assets.canvelete.com',
-        searchEndpoint: 'https://assets.canvelete.com/api/search?q={query}&page={page}&per_page={limit}',
-        thumbnailFormat: 'https://assets.canvelete.com/thumbnails/x256/{id}_256.webp',
-        fullImageFormat: 'https://assets.canvelete.com/cliparts/{id}.svg',
+        description: 'Curated clipart library hosted on assets.canvelete.com - professional quality graphics',
+        searchTool: 'search_clipart',
+        searchPrefix: 'clipart: or clip:',
+        assetTypes: ['clipart', 'graphics', 'illustrations', 'decorative elements'],
+        license: 'Licensed for Canvelete users',
+        imageFormats: ['SVG', 'PNG'],
         categories: [
             'business', 'education', 'nature', 'technology', 'people',
             'food', 'travel', 'sports', 'animals', 'holidays',
             'arrows', 'banners', 'borders', 'frames', 'icons',
+            'badges', 'ribbons', 'seals', 'certificates', 'awards',
+            'decorative', 'ornaments', 'flourishes', 'dividers',
+        ],
+        specialFeatures: [
+            'High-quality vector graphics',
+            'Consistent style across collections',
+            'Perfect for certificates and badges',
+            'Professional business graphics',
+            'Educational illustrations',
         ],
         tips: [
             'Cliparts are high-quality SVG/PNG assets',
             'Great for certificates, badges, and decorative elements',
             'Use for consistent branding and professional designs',
+            'Search by category or keyword',
+            'Combine with text for complete designs',
         ],
         exampleQueries: [
-            'certificate border',
-            'award ribbon',
-            'decorative frame',
-            'business icon',
-            'education graduation',
+            'certificate border gold',
+            'award ribbon blue',
+            'decorative frame elegant',
+            'business icon professional',
+            'education graduation cap',
+            'badge seal official',
+            'banner ribbon',
+            'corner ornament',
+            'divider line decorative',
         ],
+        usage: {
+            tool: 'search_clipart',
+            example: { query: 'certificate border', tag: 'awards', page: 1, perPage: 20 },
+            addToDesign: {
+                type: 'image',
+                src: '{url_from_search_result}',
+                objectFit: 'contain',
+            },
+        },
+    },
+    
+    illustrations: {
+        name: 'Illustrations Library',
+        description: 'Artistic illustrations and vector graphics for creative designs',
+        searchTool: 'search_illustrations',
+        searchPrefix: 'illustration: or illustrations:',
+        assetTypes: ['illustrations', 'vector art', 'artistic graphics'],
+        license: 'Licensed for Canvelete users',
+        imageFormats: ['SVG', 'PNG'],
+        categories: [
+            'abstract', 'business', 'technology', 'people', 'nature',
+            'education', 'healthcare', 'finance', 'marketing', 'lifestyle',
+        ],
+        styles: [
+            'flat design', 'isometric', 'line art', 'hand-drawn',
+            'minimalist', 'colorful', 'monochrome', '3D style',
+        ],
+        tips: [
+            'Perfect for hero sections and feature graphics',
+            'Use for storytelling and concepts',
+            'Great for landing pages and presentations',
+            'Combine with text for infographics',
+        ],
+        exampleQueries: [
+            'business team collaboration',
+            'technology innovation',
+            'education learning online',
+            'healthcare medical',
+            'finance investment',
+        ],
+        usage: {
+            tool: 'search_illustrations',
+            example: { query: 'business team', category: 'business', page: 1, perPage: 20 },
+            addToDesign: {
+                type: 'image',
+                src: '{url_from_search_result}',
+                objectFit: 'contain',
+            },
+        },
+    },
+    
+    // ==========================================================================
+    // ASSET SEARCH WORKFLOW
+    // ==========================================================================
+    
+    searchWorkflow: {
+        description: 'How to search for and add assets to your design',
+        steps: [
+            {
+                step: 1,
+                action: 'Choose asset type',
+                options: ['photos (Pixabay/Unsplash)', 'icons (Iconify)', 'cliparts', 'illustrations'],
+            },
+            {
+                step: 2,
+                action: 'Search using appropriate tool',
+                tools: {
+                    photos: 'search_stock_images',
+                    icons: 'search_icons',
+                    cliparts: 'search_clipart',
+                    illustrations: 'search_illustrations',
+                },
+            },
+            {
+                step: 3,
+                action: 'Review search results',
+                note: 'Results include URLs, dimensions, and metadata',
+            },
+            {
+                step: 4,
+                action: 'Add to design using add_element',
+                elementTypes: {
+                    photos: 'type: "image"',
+                    icons: 'type: "svg"',
+                    cliparts: 'type: "image"',
+                    illustrations: 'type: "image"',
+                },
+            },
+        ],
+        example: {
+            description: 'Complete workflow to add a photo background',
+            code: [
+                '// Step 1: Search for photos',
+                'search_stock_images({ query: "mountain landscape", perPage: 10 })',
+                '',
+                '// Step 2: Add selected photo to design',
+                'add_element({',
+                '  designId: "design_id",',
+                '  element: {',
+                '    type: "image",',
+                '    x: 0,',
+                '    y: 0,',
+                '    width: 1920,',
+                '    height: 1080,',
+                '    src: "https://pixabay.com/get/...",',
+                '    objectFit: "cover",',
+                '    name: "background_image"',
+                '  }',
+                '})',
+            ].join('\n'),
+        },
     },
 };
 
@@ -412,7 +628,7 @@ export async function getMetadataResource() {
     const createDesignSchema = zodToJsonSchema(CreateDesignSchema, 'createDesign');
 
     const metadata = {
-        version: '3.0.0',
+        version: '3.1.0',
         lastUpdated: new Date().toISOString(),
         
         // ==========================================================================
@@ -448,79 +664,18 @@ export async function getMetadataResource() {
         },
 
         // ==========================================================================
-        // ELEMENT TYPES
+        // ELEMENT TYPES & CAPABILITIES
         // ==========================================================================
-        elementTypes: {
-            rectangle: {
-                description: 'A rectangular shape with optional rounded corners',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['fill', 'stroke', 'strokeWidth', 'borderRadius', 'opacity', 'rotation','blur'],
-                example: { type: 'rectangle', x: 100, y: 100, width: 200, height: 150, fill: '#3b82f6', borderRadius: 8 },
-            },
-            circle: {
-                description: 'A circular/elliptical shape (width and height can differ for ellipse)',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['fill', 'stroke', 'strokeWidth', 'opacity', 'rotation'],
-                example: { type: 'circle', x: 100, y: 100, width: 150, height: 150, fill: '#ef4444' },
-            },
-            text: {
-                description: 'A text element with full typography control',
-                requiredProps: ['type', 'x', 'y', 'width', 'height', 'text'],
-                commonProps: ['fontSize', 'fontFamily', 'fontWeight', 'textAlign', 'fill', 'color', 'lineHeight', 'letterSpacing'],
-                example: { type: 'text', x: 100, y: 100, width: 400, height: 60, text: 'Hello World', fontSize: 48, fontFamily: 'Montserrat', fontWeight: '700', fill: '#1e293b' },
-            },
-            image: {
-                description: 'An image element from URL (supports PNG, JPG, WebP, GIF)',
-                requiredProps: ['type', 'x', 'y', 'width', 'height', 'src'],
-                commonProps: ['objectFit', 'objectPosition', 'borderRadius', 'opacity'],
-                example: { type: 'image', x: 100, y: 100, width: 300, height: 200, src: 'https://example.com/image.jpg', objectFit: 'cover', borderRadius: 12 },
-            },
-            svg: {
-                description: 'An SVG element - use for icons and vector graphics',
-                requiredProps: ['type', 'x', 'y', 'width', 'height', 'src'],
-                commonProps: ['objectFit', 'opacity'],
-                tips: ['Use objectFit: "contain" for SVGs to maintain aspect ratio', 'SVG icons from Iconify work great here'],
-            },
-            line: {
-                description: 'A line element (simple or polyline with multiple points)',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['stroke', 'strokeWidth', 'lineCap', 'lineDash', 'linePoints'],
-                example: { type: 'line', x: 100, y: 100, width: 300, height: 2, stroke: '#64748b', strokeWidth: 2 },
-            },
-            polygon: {
-                description: 'A polygon shape - can be regular (using polygonSides) or custom (using polygonPoints or svgPath)',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['fill', 'stroke', 'strokeWidth', 'polygonSides', 'polygonPoints', 'svgPath', 'svgViewBox'],
-                tips: [
-                    'For regular polygons: set polygonSides (3=triangle, 5=pentagon, 6=hexagon, etc.)',
-                    'For custom shapes: use svgPath and svgViewBox from the shapes library',
-                    'The svgPath allows ANY shape including complex curves',
-                ],
-                example: { type: 'polygon', x: 100, y: 100, width: 150, height: 150, fill: '#8b5cf6', svgPath: 'M50 5 L95 38 L77 92 L23 92 L5 38 Z', svgViewBox: '0 0 100 100' },
-            },
-            star: {
-                description: 'A star shape with configurable points and inner radius',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['fill', 'stroke', 'strokeWidth', 'starPoints', 'starInnerRadius'],
-                example: { type: 'star', x: 100, y: 100, width: 150, height: 150, fill: '#f59e0b', starPoints: 5, starInnerRadius: 0.4 },
-            },
-            bezier: {
-                description: 'A bezier curve for smooth, organic shapes',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['stroke', 'strokeWidth', 'fill', 'bezierPoints', 'bezierHandles'],
-            },
-            container: {
-                description: 'A container/frame element for grouping content (layout mode)',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['fill', 'stroke', 'strokeWidth', 'borderStyle', 'borderRadius', 'padding'],
-            },
-            table: {
-                description: 'A data table element for structured information',
-                requiredProps: ['type', 'x', 'y', 'width', 'height'],
-                commonProps: ['tableRows', 'tableColumns', 'tableHasHeader', 'tableCellData', 'tableHeaderData'],
-                tips: ['Set tableIsDynamic: true and tableCsvUrl for data-driven tables'],
-            },
-        },
+        elementTypes: ELEMENT_CAPABILITIES.elementTypes,
+        
+        // Styling capabilities matrix
+        stylingMatrix: ELEMENT_CAPABILITIES.stylingMatrix,
+        
+        // Dynamic element support
+        dynamicElementSupport: ELEMENT_CAPABILITIES.dynamicSupport,
+        
+        // Common design patterns
+        commonPatterns: ELEMENT_CAPABILITIES.commonPatterns,
 
         // ==========================================================================
         // PROPERTY GROUPS

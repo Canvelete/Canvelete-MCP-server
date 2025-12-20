@@ -20,6 +20,8 @@ export const ElementTypeEnum = z.enum([
     'bezier',
     'container',
     'table',
+    'qr',
+    'barcode',
 ]);
 
 /**
@@ -326,20 +328,51 @@ export const CanvasElementSchema = z.object({
     tableHeaderAlignment: z.enum(['left', 'center', 'right']).optional(),
 
     // ==========================================================================
-    // QR CODE PROPERTIES
+    // QR CODE PROPERTIES (for type: 'qr')
     // ==========================================================================
     
-    qrColor: z.string().optional(),
-    qrBgColor: z.string().optional(),
+    /** QR code data/content to encode */
+    qrValue: z.string().optional().describe('Data to encode in QR code (URL, text, vCard, etc.)'),
+    
+    /** QR code foreground color */
+    qrColor: z.string().optional().describe('QR code foreground color (default: black)'),
+    
+    /** QR code background color */
+    qrBgColor: z.string().optional().describe('QR code background color (default: white)'),
+    
+    /** QR code error correction level */
+    qrErrorLevel: z.enum(['L', 'M', 'Q', 'H']).optional().describe('Error correction: L (7%), M (15%), Q (25%), H (30%)'),
+    
+    /** QR code margin/quiet zone */
+    qrMargin: z.number().min(0).optional().describe('Margin around QR code in modules (default: 1)'),
 
     // ==========================================================================
-    // BARCODE PROPERTIES
+    // BARCODE PROPERTIES (for type: 'barcode')
     // ==========================================================================
     
-    barcodeFormat: z.enum(['CODE128', 'CODE39', 'EAN13', 'UPC', 'ITF14', 'MSI', 'pharmacode']).optional(),
-    barcodeLineColor: z.string().optional(),
-    barcodeBackground: z.string().optional(),
-    barcodeShowText: z.boolean().optional(),
+    /** Barcode data/content to encode */
+    barcodeValue: z.string().optional().describe('Data to encode in barcode'),
+    
+    /** Barcode format/symbology */
+    barcodeFormat: z.enum(['CODE128', 'CODE39', 'EAN13', 'EAN8', 'UPC', 'UPCE', 'ITF14', 'MSI', 'pharmacode', 'codabar']).optional().describe('Barcode format'),
+    
+    /** Barcode line/bar color */
+    barcodeLineColor: z.string().optional().describe('Barcode bar color (default: black)'),
+    
+    /** Barcode background color */
+    barcodeBackground: z.string().optional().describe('Barcode background color (default: transparent)'),
+    
+    /** Whether to show human-readable text below barcode */
+    barcodeShowText: z.boolean().optional().describe('Show text below barcode (default: true)'),
+    
+    /** Barcode text font size */
+    barcodeFontSize: z.number().min(8).max(48).optional().describe('Font size for barcode text (default: 20)'),
+    
+    /** Barcode text margin */
+    barcodeTextMargin: z.number().min(0).max(20).optional().describe('Margin between barcode and text (default: 2)'),
+    
+    /** Barcode text alignment */
+    barcodeTextAlign: z.enum(['left', 'center', 'right']).optional().describe('Text alignment (default: center)'),
 });
 
 // =============================================================================

@@ -1,7 +1,7 @@
 {
     "name": "@canveletedotcom/mcp-server",
-    "version": "1.0.4",
-    "description": "Model Context Protocol (MCP) server for Canvelete design platform. Enables AI assistants to create, manipulate, and export designs programmatically through tools, resources, and prompts.",
+    "version": "1.1.1",
+    "description": "Model Context Protocol (MCP) server for Canvelete design platform. Enables AI assistants to create, manipulate, and export designs programmatically with 13 element types including QR codes, barcodes, and access to 200K+ icons and millions of stock images.",
     "main": "dist/index.cjs",
     "bin": {
         "canvelete-mcp": "dist/index.cjs"
@@ -15,7 +15,10 @@
         "CHANGELOG.md",
         "CONTRIBUTING.md",
         "MCP_COMPLIANCE.md",
-        "SPECIFICATION_COMPLIANCE.md"
+        "SPECIFICATION_COMPLIANCE.md",
+        "ELEMENT_TYPES_GUIDE.md",
+        "ASSET_SEARCH_GUIDE.md",
+        "ENHANCEMENTS_SUMMARY.md"
     ],
     "scripts": {
         "build": "tsup",

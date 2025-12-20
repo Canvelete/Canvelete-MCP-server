@@ -79,7 +79,7 @@ async function createServer(apiKeyOverride?: string) {
     const server = new Server(
         {
             name: 'canvelete-mcp-server',
-            version: '1.0.4',
+            version: '1.1.0',
         },
         {
             capabilities: {
@@ -351,7 +351,7 @@ async function createServer(apiKeyOverride?: string) {
                 },
                 {
                     name: 'add_element',
-                    description: 'Add an element to the canvas. x=0 is left edge, y=0 is top edge. Supports all element types including SVG shapes from the shapes library (basic, arrows, stars, callouts, nature, symbols, geometric, extra).',
+                    description: 'Add an element to the canvas. x=0 is left edge, y=0 is top edge. Supports all element types including SVG shapes, QR codes (type: "qr"), and barcodes (type: "barcode").',
                     inputSchema: {
                         type: 'object',
                         properties: {
@@ -359,10 +359,10 @@ async function createServer(apiKeyOverride?: string) {
                             designId: { type: 'string' },
                             element: {
                                 type: 'object',
-                                description: 'Element to add. Use svgPath + svgViewBox for custom shapes from the shapes library (extra shapes include: Clover Pattern, Pinwheel, Wave Curves, Spiral Corners, Quarter Circles, Cross Star, Puzzle Piece, Corner Circle, Hourglass, Diagonal Split, Wave Grid, Figure Eight, Corner Curves, Flower Shape, Donut, Arch Wave, Chain Links, Dice Pattern, Bow Tie, Checkerboard, Target Ring, Scallop Edge, Arrow Tiles, Corner Notch, Rounded Corner).',
+                                description: 'Element to add. Supports: rectangle, circle, text, image, svg, line, polygon, star, bezier, container, table, qr, barcode. Use svgPath + svgViewBox for custom shapes.',
                                 properties: {
                                     // Core properties
-                                    type: { type: 'string', enum: ['rectangle', 'circle', 'text', 'image', 'line', 'polygon', 'star', 'svg', 'bezier', 'container', 'table'], description: 'Element type. Use "polygon" with svgPath for pattern shapes.' },
+                                    type: { type: 'string', enum: ['rectangle', 'circle', 'text', 'image', 'line', 'polygon', 'star', 'svg', 'bezier', 'container', 'table', 'qr', 'barcode'], description: 'Element type. Use "polygon" with svgPath for pattern shapes, "qr" for QR codes, "barcode" for barcodes.' },
                                     x: { type: 'number', description: 'X position in pixels from left edge (0 = left)' },
                                     y: { type: 'number', description: 'Y position in pixels from top edge (0 = top)' },
                                     width: { type: 'number', description: 'Width in pixels' },
@@ -477,13 +477,22 @@ async function createServer(apiKeyOverride?: string) {
                                     tableCellAlignment: { type: 'string', enum: ['left', 'center', 'right'] },
                                     tableHeaderAlignment: { type: 'string', enum: ['left', 'center', 'right'] },
 
-                                    // QR/Barcode
-                                    qrColor: { type: 'string' },
-                                    qrBgColor: { type: 'string' },
-                                    barcodeFormat: { type: 'string', enum: ['CODE128', 'CODE39', 'EAN13', 'UPC', 'ITF14', 'MSI', 'pharmacode'] },
-                                    barcodeLineColor: { type: 'string' },
-                                    barcodeBackground: { type: 'string' },
-                                    barcodeShowText: { type: 'boolean' },
+                                    // QR Code properties (for type: 'qr')
+                                    qrValue: { type: 'string', description: 'Data to encode in QR code (URL, text, vCard, etc.)' },
+                                    qrColor: { type: 'string', description: 'QR code foreground color (default: black)' },
+                                    qrBgColor: { type: 'string', description: 'QR code background color (default: white)' },
+                                    qrErrorLevel: { type: 'string', enum: ['L', 'M', 'Q', 'H'], description: 'Error correction: L (7%), M (15%), Q (25%), H (30%)' },
+                                    qrMargin: { type: 'number', description: 'Margin around QR code in modules (default: 1)' },
+                                    
+                                    // Barcode properties (for type: 'barcode')
+                                    barcodeValue: { type: 'string', description: 'Data to encode in barcode' },
+                                    barcodeFormat: { type: 'string', enum: ['CODE128', 'CODE39', 'EAN13', 'EAN8', 'UPC', 'UPCE', 'ITF14', 'MSI', 'pharmacode', 'codabar'], description: 'Barcode format' },
+                                    barcodeLineColor: { type: 'string', description: 'Barcode bar color (default: black)' },
+                                    barcodeBackground: { type: 'string', description: 'Barcode background color (default: transparent)' },
+                                    barcodeShowText: { type: 'boolean', description: 'Show text below barcode (default: true)' },
+                                    barcodeFontSize: { type: 'number', description: 'Font size for barcode text (default: 20)' },
+                                    barcodeTextMargin: { type: 'number', description: 'Margin between barcode and text (default: 2)' },
+                                    barcodeTextAlign: { type: 'string', enum: ['left', 'center', 'right'], description: 'Text alignment (default: center)' },
                                 },
                                 required: ['type', 'x', 'y', 'width', 'height'],
                             },
@@ -618,6 +627,7 @@ async function createServer(apiKeyOverride?: string) {
                     inputSchema: {
                         type: 'object',
                         properties: {
+                            apiKey: { type: 'string', description: 'Canvelete API key' },
                             query: { type: 'string', description: 'Search query' },
                             page: { type: 'number', description: 'Page number', default: 1 },
                             perPage: { type: 'number', description: 'Results per page', default: 20 },
@@ -631,6 +641,7 @@ async function createServer(apiKeyOverride?: string) {
                     inputSchema: {
                         type: 'object',
                         properties: {
+                            apiKey: { type: 'string', description: 'Canvelete API key' },
                             query: { type: 'string', description: 'Search query' },
                             page: { type: 'number', description: 'Page number', default: 1 },
                             perPage: { type: 'number', description: 'Results per page', default: 20 },
@@ -644,6 +655,7 @@ async function createServer(apiKeyOverride?: string) {
                     inputSchema: {
                         type: 'object',
                         properties: {
+                            apiKey: { type: 'string', description: 'Canvelete API key' },
                             query: { type: 'string', description: 'Search query' },
                             tag: { type: 'string', description: 'Tag filter' },
                             page: { type: 'number', description: 'Page number', default: 1 },
@@ -658,6 +670,7 @@ async function createServer(apiKeyOverride?: string) {
                     inputSchema: {
                         type: 'object',
                         properties: {
+                            apiKey: { type: 'string', description: 'Canvelete API key' },
                             query: { type: 'string', description: 'Search query' },
                             category: { type: 'string', description: 'Category filter' },
                             page: { type: 'number', description: 'Page number', default: 1 },
@@ -815,19 +828,23 @@ async function createServer(apiKeyOverride?: string) {
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 case 'search_stock_images': {
-                    const result = await searchStockImages(args);
+                    const auth = await getAuth(args);
+                    const result = await searchStockImages(auth, args);
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 case 'search_icons': {
-                    const result = await searchIcons((args as any).query, (args as any).page, (args as any).perPage);
+                    const auth = await getAuth(args);
+                    const result = await searchIcons(auth, (args as any).query, (args as any).page, (args as any).perPage);
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 case 'search_clipart': {
-                    const result = await searchClipart((args as any).query, (args as any).tag, (args as any).page, (args as any).perPage);
+                    const auth = await getAuth(args);
+                    const result = await searchClipart(auth, (args as any).query, (args as any).tag, (args as any).page, (args as any).perPage);
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 case 'search_illustrations': {
-                    const result = await searchIllustrations((args as any).query, (args as any).category, (args as any).page, (args as any).perPage);
+                    const auth = await getAuth(args);
+                    const result = await searchIllustrations(auth, (args as any).query, (args as any).category, (args as any).page, (args as any).perPage);
                     return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
                 }
                 case 'list_fonts': {
@@ -962,7 +979,7 @@ program
     .action(async (options) => {
         try {
             // Use logger (writes to stderr) - NEVER use console.log for stdout in STDIO servers
-            logger.info('Starting Canvelete MCP Server (Local stdio mode)...');
+            logger.info('Starting Canvelete MCP Server v1.1.0 (Local stdio mode)...');
             if (options.apiKey) {
                 logger.info('Using API Key from CLI option');
             }
@@ -991,7 +1008,7 @@ program
         logger.info('Canvelete MCP Server Configuration:');
         logger.info(`API Key Present: ${!!process.env.CANVELETE_API_KEY}`);
         logger.info(`Node Version: ${process.version}`);
-        logger.info(`Server Version: 1.0.4`);
+        logger.info(`Server Version: 1.1.0`);
     });
 
 // Parse Args

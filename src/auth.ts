@@ -3,6 +3,7 @@ import { CanveleteClient } from './api-client.js';
 
 export interface AuthContext {
     apiClient: CanveleteClient;
+    apiKey: string;
 }
 
 /**
@@ -22,7 +23,8 @@ export async function authenticateApiKey(apiKey: string): Promise<AuthContext> {
     // Ideally, we could call apiClient.getUserProfile() here if it exists.
 
     return {
-        apiClient
+        apiClient,
+        apiKey
     };
 }
 

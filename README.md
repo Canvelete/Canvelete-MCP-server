@@ -9,6 +9,12 @@ Model Context Protocol (MCP) server for the [Canvelete](https://canvelete.com) d
 - **[Documentation](https://docs.canvelete.com)** - Full API and platform documentation
 - **[Get API Key](https://canvelete.com/settings/api-keys)** - Generate your API key
 
+**📚 MCP Server Documentation:**
+- **[Element Types Guide](./ELEMENT_TYPES_GUIDE.md)** - Complete guide to all 13 element types (including QR codes & barcodes), their capabilities, and styling limits
+- **[Asset Search Guide](./ASSET_SEARCH_GUIDE.md)** - How to search and use external assets (Pixabay, Unsplash, Iconify, cliparts, illustrations)
+- **[Examples](./EXAMPLES.md)** - Practical examples and use cases
+- **[MCP Setup Guide](./MCP_SETUP_GUIDE.md)** - Configuration and usage instructions
+
 ## Quick Start
 
 ```bash
@@ -42,12 +48,23 @@ Then configure your MCP client (Claude Desktop, Kiro, etc.) with:
 - **Canvas**: View canvas state and elements
 - **Assets**: Browse user's asset library and available fonts
 - **User**: Access profile and preferences
+- **Metadata**: Complete element capabilities, styling limits, and design system documentation
 
 ### Tools (Actions)
 - **Design Management**: Create, update, delete, duplicate, and export designs
 - **Canvas Manipulation**: Add, update, delete elements; resize canvas; clear canvas
+  - **13 Element Types**: rectangle, circle, text, image, svg, line, polygon, star, qr, barcode, table, container, bezier
+  - **QR Codes**: Generate QR codes for URLs, vCards, WiFi, and more
+  - **Barcodes**: Support for CODE128, EAN13, UPC, and 7 other formats
 - **Templates**: List, apply, and create templates
-- **Assets**: List assets, search stock images
+- **Assets**: Comprehensive asset search across multiple sources
+  - **Pixabay**: 2.7M+ free stock photos and illustrations
+  - **Unsplash**: 3M+ high-quality curated photos
+  - **Iconify**: 200K+ icons from 150+ icon sets
+  - **Cliparts**: 10K+ curated clipart graphics
+  - **Illustrations**: 5K+ artistic illustrations
+- **Fonts**: 30+ professional fonts with metadata and pairing recommendations
+- **Shapes**: 70+ SVG shapes from 8 categories (basic, arrows, stars, callouts, nature, symbols, geometric, extra)
 - **AI Integration**: Access Civi AI for design generation
 
 ### Available Prompts
